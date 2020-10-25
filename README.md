@@ -1,1 +1,0 @@
-# news-app-react-native
