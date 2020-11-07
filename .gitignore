@@ -12,3 +12,4 @@ constants/Env.js
 
 # macOS
 .DS_Store
+env.js

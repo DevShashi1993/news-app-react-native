@@ -9,12 +9,21 @@ const openSrcInBrowser = (url) => {
 };
 
 const NewsCards = ({srcName, author, title, description, urlToImage, url, publishedAt}) => {
+  var d = new Date(publishedAt);
+  
+  let year = d.getFullYear();
+  let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  let month = months[d.getMonth()];
+  let date = d.getDate();
+  let hours = d.getHours();
+  let mins = d.getMinutes();
+  let publisgTimeFormated = `${month} ${date}, ${year} - ${hours}:${mins}`;
   return (
     <>
       <Card style={styles.newsCards}>
         <Card.Title
           title={srcName}
-          subtitle={publishedAt}
+          subtitle={publisgTimeFormated}
           left={LeftContent}
         />
         <Card.Cover
