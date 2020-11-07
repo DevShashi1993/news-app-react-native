@@ -8,8 +8,8 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
-constants/Env.js
+env.js
 
 # macOS
 .DS_Store
-env.js
+

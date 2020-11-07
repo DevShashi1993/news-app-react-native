@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, StatusBar, Text, View, FlatList } from "react-native";
-import NewsCards from "./components/NewsCards";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  StyleSheet,
+  StatusBar,
+  Text,
+  View,
+  FlatList,
+  Animated,
+  Dimensions,
+} from "react-native";
+import NewsCard from "./components/NewsCard";
 import Colors from "./constants/Colors";
 import env from "./env";
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 const App = () => {
   const [newsData, setNewsData] = useState();
@@ -39,13 +49,38 @@ const App = () => {
     />
   );
 
-  let allNewsCards = (
-    <FlatList
-      data={newsData}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.publishedAt}
-    />
-  );
+  const NewsCardLists = () => {
+    const useLazyRef = (initializer) => {
+      const ref = useRef();
+      if (ref.current === undefined) {
+        ref.current = initializer();
+      }
+      return ref.current;
+    };
+    const y = useLazyRef(() => new Animated.Value(0));
+    const onScroll = useLazyRef(() =>
+      Animated.event(
+        [
+          {
+            nativeEvent: {
+              contentOffset: { y },
+            },
+          },
+        ],
+        { useNativeDriver: true }
+      )
+    );
+    return (
+      <AnimatedFlatList
+        scrollEventThrottle={16}
+        bounces={false}
+        {...{ onScroll }}
+        data={newsData}
+        renderItem={({ index, item }) => <NewsCard {...{ y, index, item }} />}
+        keyExtractor={(item) => item.publishedAt}
+      />
+    );
+  };
 
   let errorMessageComp = (
     <Text style={styles.errMsg}>Error: {errorMessage}</Text>
@@ -57,7 +92,8 @@ const App = () => {
       <View style={styles.header}>
         <Text style={styles.title}>Top Headlines</Text>
       </View>
-      {newsData ? allNewsCards : errorMessage && errorMessageComp}
+      {/* <NewsCardLists/> */}
+      {newsData ? <NewsCardLists /> : errorMessage && errorMessageComp}
     </View>
   );
 };
